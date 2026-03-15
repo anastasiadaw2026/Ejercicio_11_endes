@@ -8,8 +8,12 @@ class Book:
         self.author: str = ''
         self.title: str = ''
         self.price: float = 0.0
-        self._available: bool = True
+        self.available: bool = True
         self.publisher: Publisher = Publisher()
+
+    @property
+    def book_id(self):
+        return self._book_id
 
     def __str__(self):
         return (f"Book id: {self._book_id}\n"

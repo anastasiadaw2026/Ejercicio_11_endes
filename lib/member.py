@@ -5,8 +5,8 @@ class Member:
     # como no sabemos como trabajar con fechas le asignamos una fecha por
     # defecto a todo. La idea es que después habrá una función que ponga la
     # fecha actual del sistema y otra que le sume un año.
-    SYSDATE: str = '15.02.2026'
-    EXPIRE_DATE: str = '16.02.2026'
+    SYSDATE: str = '15.03.2026'
+    EXPIRE_DATE: str = '15.03.2027'
 
     def __init__(self):
         self._member_id: int = self._create_id()
@@ -15,6 +15,10 @@ class Member:
         self.member_type: str = ''
         self._member_date: str = Member.SYSDATE
         self._expiry_date: str = Member.EXPIRE_DATE
+
+    @property
+    def member_id(self):
+        return self._member_id
 
     def __str__(self):
         return (f"Member id: {self._member_id}\n"
