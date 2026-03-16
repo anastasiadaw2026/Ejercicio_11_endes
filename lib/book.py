@@ -6,8 +6,8 @@ class Book:
     class ConstantsId:
         MAX_BOOKS: int = 100
 
-    def __init__(self):
-        self._book_id: int = self._create_id()
+    def __init__(self, book_id):
+        self._book_id: int = book_id
         self.author: str = ''
         self.title: str = ''
         self.price: float = 0.0
@@ -24,9 +24,3 @@ class Book:
                 f"Book author: {self.author}\n"
                 f"Book price: {self.price}\n"
                 f"Book publisher: {self.publisher.name}\n")
-
-    def _create_id(self):
-        id_1: int = 0
-        id_1 = random.randint(1, Book.ConstantsId.MAX_BOOKS)
-        return id_1
-

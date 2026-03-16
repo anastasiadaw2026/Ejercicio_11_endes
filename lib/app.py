@@ -28,12 +28,16 @@ class App:
         self._publishers: list[Publisher] = self.create_list(Publisher)
         self._books: list[Book] = self.create_list(Book)
         self._members: list[Member] = self.create_list(Member)
-        self._loans: list[Loan] = self.create_list(Loan)
+        self._loans: list[Loan] = self.create_list(Loan())
 
     def create_list(self, element): #funciona
         list_elements: list = []
-        list_elements = [element(auto_id + 1) for auto_id in range(
-            App.ConstantsMaximums.MAX_ELEMENTS)]
+        if isinstance(element, Loan):
+            list_elements = [element for _ in range(
+                App.ConstantsMaximums.MAX_ELEMENTS)]
+        else:
+            list_elements = [element(auto_id + 1) for auto_id in range(
+                App.ConstantsMaximums.MAX_ELEMENTS)]
         return list_elements
 
     def run(self):
@@ -109,7 +113,7 @@ class App:
         if self._books[option_book - 1].available:
             self.assign_book_loan(option_book)
             self.assign_member_loan()
-            self.print_list(self._loans)
+            print(self._loans[self.counter_loans])
         else:
             print("The book is not available.")
 
@@ -119,6 +123,7 @@ class App:
         self._books[option_book - 1].available = False
 
     def assign_member_loan(self):
+        # ver si la lista no esta vacía
         option_member: int = 0
         print("Choose who wants to borrow it:")
         self.print_list(self._members)
@@ -132,7 +137,7 @@ class App:
         match option_menu_2:
             case App.ConstantsMenu.OPCION_UNO:
                 self.choose_publisher()
-            case App.ConstantsMenu.OPCION_UNO:
+            case App.ConstantsMenu.OPCION_DOS:
                 self.add_publisher()
                 self._books[self.counter_books].publisher = (
                     self._publishers[self.counter_publishers])

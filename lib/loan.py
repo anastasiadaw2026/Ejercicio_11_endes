@@ -14,8 +14,8 @@ class Loan:
         self._due_date: str = Loan.ConstantsDates.EXPIRE_DATE
         self._return_date: str = ''
         self._issue: str = Loan.ConstantsDates.SYSDATE
-        self.book: Book = Book()
-        self.member: Member = Member()
+        self.book: Book = Book(-1)
+        self.member: Member = Member(-1)
 
     @property
     def return_date(self):

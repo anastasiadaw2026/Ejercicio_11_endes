@@ -12,8 +12,8 @@ class Member:
     class ConstantsId:
         MAX_MEMBERS: int = 100
 
-    def __init__(self):
-        self._member_id: int = self._create_id()
+    def __init__(self, member_id):
+        self._member_id: int = member_id
         self.name: str = ''
         self.address: str = ''
         self.member_type: str = ''
@@ -31,8 +31,3 @@ class Member:
                 f"Member address: {self.address}\n"
                 f"Member register date: {self._member_date}\n"
                 f"Member expiry date: {self._expiry_date}")
-
-    def _create_id(self):
-        id_1: int = 0
-        id_1 = random.randint(1, Member.ConstantsId.MAX_MEMBERS)
-        return id_1
