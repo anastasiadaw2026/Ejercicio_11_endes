@@ -25,20 +25,10 @@ class App:
         self.counter_publishers: int = -1
         self.counter_members: int = -1
         self.counter_loans: int = -1
-        self._publishers: list[Publisher] = self.create_list(Publisher)
-        self._books: list[Book] = self.create_list(Book)
-        self._members: list[Member] = self.create_list(Member)
-        self._loans: list[Loan] = self.create_list(Loan())
-
-    def create_list(self, element): #funciona
-        list_elements: list = []
-        if isinstance(element, Loan):
-            list_elements = [element for _ in range(
-                App.ConstantsMaximums.MAX_ELEMENTS)]
-        else:
-            list_elements = [element(auto_id + 1) for auto_id in range(
-                App.ConstantsMaximums.MAX_ELEMENTS)]
-        return list_elements
+        self._publishers: list[Publisher] = []
+        self._books: list[Book] = []
+        self._members: list[Member] = []
+        self._loans: list[Loan] = []
 
     def run(self):
         option: int = 0
@@ -51,16 +41,21 @@ class App:
                     self.add_publisher()
                 case App.ConstantsMenu.OPCION_DOS:
                     self.counter_books += 1
+                    self._books.append(
+                        Book(self.counter_books + 1))
                     self.register_book()
                     self.print_publisher_menu()
                     self.assign_publisher_book()
                     print(self._books[self.counter_books])
                 case App.ConstantsMenu.OPCION_TRES:
                     self.counter_members += 1
+                    self._members.append(
+                        Member(self.counter_members + 1))
                     self.register_member()
                     print(self._members[self.counter_members])
                 case App.ConstantsMenu.OPCION_CUATRO:
                     self.counter_loans += 1
+                    self._loans.append(Loan())
                     self.create_loan()
                 case App.ConstantsMenu.OPCION_CINCO:
                     self.register_return()
@@ -91,7 +86,7 @@ class App:
     def chech_return_date(self, option_returned_book: int):
         date: list[str] = []
         expire_date: list[str] = []
-        date = App.SYSDATE.split('.')
+        date = App.ConstantsDate.SYSDATE.split('.')
         expire_date = self._loans[option_returned_book - 1].due_date.split('.')
         if not (date[2] < expire_date[2] or (date[1] < expire_date[1]
                 and date[2] == expire_date[2]) or (date[0] <= expire_date[0]
@@ -155,6 +150,7 @@ class App:
 
     def add_publisher(self):
         self.counter_publishers += 1
+        self._publishers.append(Publisher(self.counter_publishers + 1))
         self.register_publisher()
         print(self._publishers[self.counter_publishers])
 
