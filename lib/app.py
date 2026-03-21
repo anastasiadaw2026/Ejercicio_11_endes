@@ -17,12 +17,9 @@ class App:
         OPCION_CINCO: int = 5
         OPCION_SEIS: int = 6
 
-    class ConstantsMaximums:
-        MAX_ELEMENTS: int = 100
-
     def __init__(self):
         self.counter_books: int = -1
-        self.counter_publishers: int = -1
+        self.counter_publishers: int = -1   
         self.counter_members: int = -1
         self.counter_loans: int = -1
         self._publishers: list[Publisher] = []
@@ -32,39 +29,51 @@ class App:
 
     def run(self):
         option: int = 0
-        print("Hi, choose the option you want to execute: ")
+        print("Hi, choose the option you want to execute:")
         while option != App.ConstantsMenu.SALIDA:
             self.print_menu()
             option: int = int(input(": "))
             match option:
                 case App.ConstantsMenu.OPCION_UNO:
                     self.add_publisher()
+                    print(self._publishers[self.counter_publishers])
                 case App.ConstantsMenu.OPCION_DOS:
-                    self.counter_books += 1
-                    self._books.append(
-                        Book(self.counter_books + 1))
-                    self.register_book()
-                    self.print_publisher_menu()
-                    self.assign_publisher_book()
+                    self.add_book()
                     print(self._books[self.counter_books])
                 case App.ConstantsMenu.OPCION_TRES:
-                    self.counter_members += 1
-                    self._members.append(
-                        Member(self.counter_members + 1))
-                    self.register_member()
+                    self.add_member()
                     print(self._members[self.counter_members])
                 case App.ConstantsMenu.OPCION_CUATRO:
                     self.counter_loans += 1
                     self._loans.append(Loan())
                     self.create_loan()
                 case App.ConstantsMenu.OPCION_CINCO:
-                    self.register_return()
+                    if self._loans:
+                        self.register_return()
+                    else:
+                        print("No loan is registered at the moment.")
                 case App.ConstantsMenu.OPCION_SEIS:
-                    self.remove_member()
+                    if self._members:
+                        self.remove_member()
+                    else:
+                        print("No member is registered at the moment.")
                 case App.ConstantsMenu.SALIDA:
                     print("¡Bye!")
                 case _:
                     print("Incorrect number, try it again.")
+
+    def add_member(self):
+        self.counter_members += 1
+        self._members.append(
+            Member(self.counter_members + 1))
+        self.register_member()
+
+    def add_book(self):
+        self.counter_books += 1
+        self._books.append(Book(self.counter_books + 1))
+        self.register_book()
+        self.print_publisher_menu()
+        self.assign_publisher_book()
 
     def remove_member(self):
         option_member_remove: int = 0
@@ -78,12 +87,11 @@ class App:
         print("Choose the book that is returned:")
         self.print_list(self._loans)
         option_returned_book = int(input(": "))
-        self.chech_return_date(option_returned_book)
-        self._loans[option_returned_book].return_date = (
-            App.ConstantsDate.SYSDATE)
+        self.check_return_date(option_returned_book)
+        self._loans[option_returned_book - 1].return_date = App.ConstantsDate.SYSDATE
         self._books[option_returned_book - 1].available = True
 
-    def chech_return_date(self, option_returned_book: int):
+    def check_return_date(self, option_returned_book: int):
         date: list[str] = []
         expire_date: list[str] = []
         date = App.ConstantsDate.SYSDATE.split('.')
@@ -101,24 +109,55 @@ class App:
               "in two weeks.")
 
     def create_loan(self):
-        option_book: int = 0
-        print("Choose the book you want to borrow:")
-        self.print_list(self._books)
-        option_book = int(input(": "))
-        if self._books[option_book - 1].available:
-            self.assign_book_loan(option_book)
+        print("Book:")
+        if self._books:
+            self.register_existing_book_loan()
+        else:
+            self.register_element(Book)
+        print("Member:")
+        if self._members and self._books:
             self.assign_member_loan()
             print(self._loans[self.counter_loans])
-        else:
-            print("The book is not available.")
+        elif self._books:
+            self.register_element(Member)
 
-    def assign_book_loan(self, option_book: int):
-        self._loans[self.counter_loans].book = self._books[
-            option_book - 1]
-        self._books[option_book - 1].available = False
+    def register_existing_book_loan(self):
+        option_book: int = 0
+        available_books = [x for x in self._books if x.available]
+        print("Choose the book you want to borrow:")
+        self.print_list(available_books)
+        option_book = int(input(": "))
+        self.assign_book_loan(option_book, available_books)
+
+    def register_element(self, element_type):
+        print(f"No element is registered at the moment.\n"
+              "Choose an option:\n"
+              "1. Cancel the loan.\n"
+              "2. Register a element.")
+        option = int(input(": "))
+        if option == 1:
+            del self._loans[self.counter_loans]
+            self.counter_loans -= 1
+        elif option == 2:
+            if element_type == Book:
+                self.add_book()
+                self._loans[self.counter_loans].book = self._books[
+                    self.counter_books]
+            else:
+                self.add_member()
+                self._loans[self.counter_loans].member = self._members[
+                    self.counter_members]
+                print(self._loans[self.counter_loans])
+        else:
+            print("Wrong number. Try it again.")
+            self.register_element(element_type)
+
+    def assign_book_loan(self, option_book: int, available_books):
+        position = self._books.index(available_books[option_book - 1])
+        self._loans[self.counter_loans].book = self._books[position]
+        self._books[position].available = False
 
     def assign_member_loan(self):
-        # ver si la lista no esta vacía
         option_member: int = 0
         print("Choose who wants to borrow it:")
         self.print_list(self._members)
@@ -129,42 +168,35 @@ class App:
     def assign_publisher_book(self):
         option_menu_2: int = 0
         option_menu_2 = int(input(": "))
-        match option_menu_2:
-            case App.ConstantsMenu.OPCION_UNO:
-                self.choose_publisher()
-            case App.ConstantsMenu.OPCION_DOS:
-                self.add_publisher()
-                self._books[self.counter_books].publisher = (
-                    self._publishers[self.counter_publishers])
-            case _:
-                print("The introduced number is incorrect. Try it again.")
-                self.assign_publisher_book()
+        if option_menu_2 == App.ConstantsMenu.OPCION_UNO and self._publishers:
+            self.choose_publisher()
+        elif option_menu_2 == App.ConstantsMenu.OPCION_DOS:
+            self.add_publisher()
+            self._books[self.counter_books].publisher = (self._publishers[
+                self.counter_publishers])
+        else:
+            print("The introduced number is incorrect. Try it again.")
+            self.assign_publisher_book()
 
     def choose_publisher(self):
         option_publisher: int = 0
         print("Choose a number:")
         self.print_list(self._publishers)
         option_publisher = int(input(": "))
-        self._books[self.counter_books].publisher = (
-            self._publishers[option_publisher - 1])
+        self._books[self.counter_books].publisher = (self._publishers[
+            option_publisher - 1])
 
     def add_publisher(self):
         self.counter_publishers += 1
         self._publishers.append(Publisher(self.counter_publishers + 1))
         self.register_publisher()
-        print(self._publishers[self.counter_publishers])
 
     def print_list(self, elements_list):
-        for index, element in enumerate(elements_list):
-            if isinstance(element, Book):
-                if element.title:
-                    print(index + 1, '-', element)
-            elif isinstance(element, Loan):
-                if element.book.title:
-                    print(index + 1, '-', element)
-            else:
-                if element.name:
-                    print(index + 1, '-', element)
+        if elements_list:
+            for index, element in enumerate(elements_list):
+                print(index + 1, '-', element)
+        else:
+            print("No data found")
 
     def register_publisher(self):
         self._publishers[self.counter_publishers].name = input("Enter the "
@@ -184,10 +216,14 @@ class App:
         self._members[self.counter_members].member_type = input("Enter the member's type: ")
 
     def print_publisher_menu(self):
-        print(f"To assign the publisher you can choose between the next "
-              f"options:\n"
-              f"{App.ConstantsMenu.OPCION_UNO}. Choose a existent one.\n"
-              f"{App.ConstantsMenu.OPCION_DOS}. Introduce another publisher.")
+        print(f"To assign the publisher: ")
+        if self._publishers:
+            print(f"{App.ConstantsMenu.OPCION_UNO}. Choose a existent one.\n"
+                  f"{App.ConstantsMenu.OPCION_DOS}. Introduce another "
+                  f"publisher.")
+        else:
+            print("     No publisher is registered at the moment. Press 2 to "
+                  "register one.")
 
     def print_menu(self):
         print(f"{App.ConstantsMenu.OPCION_UNO}. Register a publisher.\n"
