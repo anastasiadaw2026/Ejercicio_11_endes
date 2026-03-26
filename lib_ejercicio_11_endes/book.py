@@ -1,4 +1,4 @@
-from ENDES.Ejercicio_11.lib.publisher import Publisher
+from ENDES.Ejercicio_11.lib_ejercicio_11_endes.publisher import Publisher
 
 
 class Book:

@@ -1,5 +1,5 @@
-from ENDES.Ejercicio_11.lib.book import Book
-from ENDES.Ejercicio_11.lib.member import Member
+from ENDES.Ejercicio_11.lib_ejercicio_11_endes.book import Book
+from ENDES.Ejercicio_11.lib_ejercicio_11_endes.member import Member
 
 
 class Loan:
