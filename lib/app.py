@@ -6,7 +6,7 @@ from ENDES.Ejercicio_11.lib.publisher import Publisher
 
 class App:
     """
-     Main application class for managing a library system.
+    Main application class for managing a library system.
 
     The `App` class integrates the core system functionalities, such as handling
     publishers, books, members, and loans. It provides methods for registering
@@ -476,16 +476,16 @@ class App:
 
     def print_menu(self) -> None:
         """
-            Display the main application menu.
+        Display the main application menu.
 
-            This method prints the list of available options for the user,
-            including actions such as registering entities (publisher, book,
-            member), managing loans and returns, and exiting the application.
+        This method prints the list of available options for the user,
+        including actions such as registering entities (publisher, book,
+        member), managing loans and returns, and exiting the application.
 
-            The menu options are dynamically generated using constants defined
-            in ``App.ConstantsMenu``.
+        The menu options are dynamically generated using constants defined
+        in ``App.ConstantsMenu``.
 
-            :return: None
+        :return: None
         """
         print(f"{App.ConstantsMenu.OPCION_UNO}. Register a publisher.\n"
               f"{App.ConstantsMenu.OPCION_DOS}. Register a book.\n"
